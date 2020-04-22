@@ -33,11 +33,12 @@ public class InvertedIndexer {
 
             Job job = Job.getInstance(conf, "invert index");
             job.setJarByClass(InvertedIndexer.class);
-            job.setInputFormatClass(TextInputFormat.class);
+            job.setInputFormatClass(WholeFileInputFormat.class);
 
             job.setOutputKeyClass(Text.class);  //指定输出的key的类型，Text相当于String类
             job.setOutputValueClass(Text.class);  //指定输出的Value的类型，Text相当于String类
 
+            job.setPartitionerClass(NewPartitioner.class);
             job.setMapperClass(InvertedIndexMapper.class);
             job.setReducerClass(InvertedIndexReducer.class);
 
