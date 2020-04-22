@@ -1,0 +1,6 @@
+*.xml
+.idea/
+META-INF
+out/
+*.iml
+*.txt
