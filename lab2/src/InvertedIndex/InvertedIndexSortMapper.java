@@ -21,16 +21,15 @@ public class InvertedIndexSortMapper extends Mapper<Text, Text, Text, Text> {
     {
         FileSplit fileSplit = (FileSplit) context.getInputSplit();
         String fileName = fileSplit.getPath().getName();
-        Text word = new Text();
         //key <word,docid>
         Pattern pattern = Pattern.compile("^\\d+(\\.\\d+)?");
         Matcher matcher = pattern.matcher(value.toString());
-
+/*
         System.out.print("key " + key.toString() + '\n');
         System.out.print("value " + value.toString() + '\n');
         System.out.print(matcher.find());
         System.out.print("====================");
-
+*/
         String[] s = value.toString().split(",");
         context.write(new Text(matcher.group(0)), new Text(key.toString() +","+ s[1]));
     }

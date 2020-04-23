@@ -64,7 +64,7 @@ public class InvertedIndexReducer extends Reducer<Text, Text, Text, Text> {
         //System.out.print(key);
         //System.out.print(all.toString());
         //System.out.print("===============");
-    } //最终输出键值对示例：(“fish", “doc1#0; doc1#8;doc2#0;doc2#8 ")
+    }
 
     //将最后一个单词的key-value输出
     public void cleanup(Context context) throws IOException,InterruptedException {
