@@ -12,23 +12,21 @@ import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 
 
 public class InvertedIndexer {
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) {
         try {
             Configuration conf = new Configuration();
 
-            conf.set("fs.defaultFS", "hdfs://localhost:9000");
+            //conf.set("fs.defaultFS", "hdfs://localhost:9000");
             //指定输入输出目录
-            final String OUTPUT_PATH = "/output";
+            final String OUTPUT_PATH = args[1];
             Path path = new Path(OUTPUT_PATH);
 
             //加载配置文件
             FileSystem fileSystem = path.getFileSystem(conf);
 
             //输出目录若存在则删除
-            if (fileSystem.exists(new Path(OUTPUT_PATH)))
-            {
-                fileSystem.delete(new Path(OUTPUT_PATH),true);
+            if (fileSystem.exists(new Path(OUTPUT_PATH))) {
+                fileSystem.delete(new Path(OUTPUT_PATH), true);
             }
 
 
@@ -43,12 +41,13 @@ public class InvertedIndexer {
             job.setMapperClass(InvertedIndexMapper.class);
             job.setReducerClass(InvertedIndexReducer.class);
 
+            Path out1path = new Path(path+"/inverted");
             FileInputFormat.addInputPath(job, new Path(args[0]));
-            FileOutputFormat.setOutputPath(job, new Path(args[1]));
+            FileOutputFormat.setOutputPath(job, out1path);
 
             //System.exit(job.waitForCompletion(true) ? 0 : 1);
 
-            Path out1path = new Path("hdfs://localhost:9000/test-out");
+
             Job job2 = Job.getInstance(conf, "invert index sorted");
             job2.setInputFormatClass(KeyValueTextInputFormat.class);
             job2.setJarByClass(InvertedIndexer.class);
@@ -60,16 +59,18 @@ public class InvertedIndexer {
             job2.setReducerClass(InvertedIndexSortReducer.class);
 
             FileInputFormat.setInputPaths(job2, out1path);
-            FileOutputFormat.setOutputPath(job2, new Path("hdfs://localhost:9000/output/sorted"));
-/*
+            FileOutputFormat.setOutputPath(job2, new Path(path + "/sorted"));
+
             if(job.waitForCompletion(true)){
                 System.exit(job2.waitForCompletion(true) ? 0 : 1);
             };
-*/
-            System.exit(job2.waitForCompletion(true) ? 0 : 1);
+
+            //System.exit(job2.waitForCompletion(true) ? 0 : 1);
 
 
-        } catch (Exception e) { e.printStackTrace(); }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

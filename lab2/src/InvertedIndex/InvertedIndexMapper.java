@@ -20,9 +20,9 @@ public class InvertedIndexMapper extends Mapper<Text, Text, Text, Text> {
         FileSplit fileSplit = (FileSplit) context.getInputSplit();
         String fileName = fileSplit.getPath().getName();
         Text word = new Text();
+        String[] s = fileName.split("\\.");
+        fileName = fileName.substring(0, fileName.length() - 14);
         //key <word,docid>
-        //Text fileName_lineOffset = new Text(fileName +"#" + key.toString());
-        //Text frequency = new Text("1");
         StringTokenizer itr = new StringTokenizer(value.toString());
         //将词和词频存入一个map中
         Map<String, Integer> map = new HashMap<>();
@@ -37,7 +37,8 @@ public class InvertedIndexMapper extends Mapper<Text, Text, Text, Text> {
         for (Map.Entry<String, Integer> entry : map.entrySet()) {
             word.set(entry.getKey() + "," + fileName);
             context.write(word, new Text(entry.getValue().toString()));
+            System.out.print("key:"+word.toString()+'\t');
+            System.out.print("value:"+entry.getValue().toString()+'\n');
         }
-
     }
 }
