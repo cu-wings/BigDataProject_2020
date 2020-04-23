@@ -23,7 +23,6 @@ public class WholeFileRecordReader extends
     private FileSplit fileSplit;
     private Configuration conf;
     //将作为key-value中的value值返回
-    private int value = 0;
     private Text currentKey = new Text();
     private Text currentValue = new Text();
     // 因为只生成一条记录，所以只需要调用一次。因此第一次调用过后将processed赋值为true，从而结束key和value的生成
@@ -40,18 +39,16 @@ public class WholeFileRecordReader extends
     }
 
     /**
-     * 核心算法
      * 用来产生key-value值
      * 将生成的value值存入value对象中
      */
     @Override
     public boolean nextKeyValue() throws IOException, InterruptedException {
         if (!processed) {
-            /*
-             * 注意这儿，fileSplit中只是存放着待处理内容的位置 大小等信息，并没有实际的内容
-             * 因此这里会通过fileSplit找到待处理文件，然后再读入内容到value中
+            /**
+             * 通过fileSplit找到待处理文件，然后再读入内容到value中
              */
-            byte[] contents = new byte[(int) fileSplit.getLength()];
+            //byte[] contents = new byte[(int) fileSplit.getLength()];
             Path file = fileSplit.getPath();
             FileSystem fs = file.getFileSystem(conf);
             FSDataInputStream in = fs.open(file);
