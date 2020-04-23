@@ -25,13 +25,13 @@ public class InvertedIndexMapper extends Mapper<Text, Text, Text, Text> {
         //Text frequency = new Text("1");
         StringTokenizer itr = new StringTokenizer(value.toString());
         //将词和词频存入一个map中
-        Map<String,Integer> map=new HashMap<>();
+        Map<String, Integer> map = new HashMap<>();
         for (; itr.hasMoreTokens(); ) {
             String token = itr.nextToken();
-            if(!map.containsKey(token))
+            if (!map.containsKey(token))
                 map.put(token, 1);
             else
-                map.replace(token, map.get(token)+1);
+                map.replace(token, map.get(token) + 1);
         }
         //遍历map获取key-value
         for (Map.Entry<String, Integer> entry : map.entrySet()) {

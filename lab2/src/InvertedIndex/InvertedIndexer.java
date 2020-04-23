@@ -6,6 +6,7 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.input.KeyValueTextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 
@@ -44,7 +45,30 @@ public class InvertedIndexer {
 
             FileInputFormat.addInputPath(job, new Path(args[0]));
             FileOutputFormat.setOutputPath(job, new Path(args[1]));
-            System.exit(job.waitForCompletion(true) ? 0 : 1);
+
+            //System.exit(job.waitForCompletion(true) ? 0 : 1);
+
+            Path out1path = new Path("hdfs://localhost:9000/test-out");
+            Job job2 = Job.getInstance(conf, "invert index sorted");
+            job2.setInputFormatClass(KeyValueTextInputFormat.class);
+            job2.setJarByClass(InvertedIndexer.class);
+
+            job2.setOutputKeyClass(Text.class);  //指定输出的key的类型，Text相当于String类
+            job2.setOutputValueClass(Text.class);  //指定输出的Value的类型，Text相当于String类
+
+            job2.setMapperClass(InvertedIndexSortMapper.class);
+            job2.setReducerClass(InvertedIndexSortReducer.class);
+
+            FileInputFormat.setInputPaths(job2, out1path);
+            FileOutputFormat.setOutputPath(job2, new Path("hdfs://localhost:9000/output/sorted"));
+/*
+            if(job.waitForCompletion(true)){
+                System.exit(job2.waitForCompletion(true) ? 0 : 1);
+            };
+*/
+            System.exit(job2.waitForCompletion(true) ? 0 : 1);
+
+
         } catch (Exception e) { e.printStackTrace(); }
     }
 
